@@ -3,6 +3,7 @@ package com.example.calculator;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private Double operand1=null;
     private Double operand2=null;
     private String pendingOperation="=";
-
+    private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +67,63 @@ public class MainActivity extends AppCompatActivity {
         buttonDot.setOnClickListener(listener);
 
 
+        View.OnClickListener opListener=new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Button b=(Button)v;
+                String operation=b.getText().toString();
+                String value=newNumber.getText().toString();
+                try{
+                    Double doubleValue=Double.valueOf(value);
+                    performOperation(doubleValue,operation);
+                }catch(NumberFormatException e){
+                    newNumber.setText("");
+                }
+                pendingOperation=operation;
+                displayOperation.setText(pendingOperation);
+            }
+        };
+
+        buttonDivide.setOnClickListener(opListener);
+        buttonEquals.setOnClickListener(opListener);
+        buttonMinus.setOnClickListener(opListener);
+        buttonMultiply.setOnClickListener(opListener);
+        buttonPlus.setOnClickListener(opListener);
 
 
-
+    }
+    void performOperation(Double value,String operation){
+        Log.d(TAG, "performOperation: initially operand1 is "+operand1+" and operand 2 is "+operand2);
+        Log.d(TAG, "performOperation: inside,operation is"+operation+" and value is "+value);
+        if(null==operand1){
+            operand1=value;
+            Log.d(TAG, "inside if clause: value of operand 1 is "+operand1);
+        }else{
+            operand2=value;
+            Log.d(TAG, "inside else clause: value of operand 2 is "+operand2);
+            if(pendingOperation.equals("=")){
+                pendingOperation=operation;
+            }
+            switch(pendingOperation){
+                case "=":
+                    operand1=operand2;
+                    break;
+                case "/":
+                    if(operand2==0){
+                        operand1=0.0;
+                    }else{
+                        operand1/=operand2;
+                    }
+                    break;
+                case "*":operand1 *=operand2;
+                    break;
+                case "-":operand1-=operand2;
+                    break;
+                case "+":operand1+=operand2;
+                    break;
+            }
+        }
+        result.setText(operand1.toString());
+        newNumber.setText("");
     }
 }
