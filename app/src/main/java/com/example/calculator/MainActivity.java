@@ -132,38 +132,41 @@ public class MainActivity extends AppCompatActivity {
         displayOperation.setText(pendingOperation);
     }
 
-    void performOperation(Double value, String operation){
-        Log.d(TAG, "performOperation: initially operand1 is "+operand1+" and operand 2 is "+operand2);
-        Log.d(TAG, "performOperation: inside,operation is"+operation+" and value is "+value);
-        if(null==operand1){
-            operand1=value;
-            Log.d(TAG, "inside if clause: value of operand 1 is "+operand1);
-        }else{
-            operand2=value;
-            Log.d(TAG, "inside else clause: value of operand 2 is "+operand2);
-            if(pendingOperation.equals("=")){
-                pendingOperation=operation;
-            }
-            switch(pendingOperation){
-                case "=":
-                    operand1=operand2;
-                    break;
-                case "/":
-                    if(operand2==0){
-                        operand1=0.0;
-                    }else{
-                        operand1/=operand2;
-                    }
-                    break;
-                case "*":operand1 *=operand2;
-                    break;
-                case "-":operand1-=operand2;
-                    break;
-                case "+":operand1+=operand2;
-                    break;
-            }
+    void performOperation(Double value, String operation) {
+    Log.d(TAG, "Operation: " + operation + ", Value: " + value);
+    
+    if (operand1 == null) {
+        operand1 = value;
+        Log.d(TAG, "Operand1 initialized: " + operand1);
+    } else {
+        operand2 = value;
+        Log.d(TAG, "Operand2 set: " + operand2);
+        
+        if ("=".equals(pendingOperation)) {
+            pendingOperation = operation;
         }
-        result.setText(operand1.toString());
-        newNumber.setText("");
+        
+        switch (pendingOperation) {
+            case "=":
+                operand1 = operand2;
+                break;
+            case "/":
+                operand1 = (operand2 == 0) ? 0.0 : operand1 / operand2;
+                break;
+            case "*":
+                operand1 *= operand2;
+                break;
+            case "-":
+                operand1 -= operand2;
+                break;
+            case "+":
+                operand1 += operand2;
+                break;
+        }
     }
+    
+    result.setText(operand1.toString());
+    newNumber.setText("");
+}
+
 }
